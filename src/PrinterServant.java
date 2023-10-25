@@ -1,9 +1,9 @@
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class HelloServant extends UnicastRemoteObject implements HelloService {
+public class PrinterServant extends UnicastRemoteObject implements PrinterService {
 
-    public HelloServant() throws RemoteException {
+    public PrinterServant() throws RemoteException {
         super();
     }
     public String echo(String input) throws RemoteException{
