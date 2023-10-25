@@ -1,3 +1,5 @@
+package Server.Printer;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
