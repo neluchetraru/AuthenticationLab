@@ -10,6 +10,17 @@ public class Encryption {
     public Encryption() {
 
     }
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
     static String hashPassword(String password) {
         MessageDigest md = null;
         try {
@@ -18,7 +29,7 @@ public class Encryption {
             throw new RuntimeException(e);
         }
         byte[] encodedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
-        return Arrays.toString(encodedPassword);
+        return bytesToHex(encodedPassword);
     }
 
 }
