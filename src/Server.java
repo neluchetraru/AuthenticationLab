@@ -7,6 +7,7 @@ public class Server {
     public static void main(String[] args) throws RemoteException {
         Registry registry = LocateRegistry.createRegistry(5099);
         registry.rebind("hello", new PrinterServant());
+        registry.rebind("auth", new AuthServant());
 
 
 
