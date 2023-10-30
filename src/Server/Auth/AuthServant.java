@@ -1,11 +1,11 @@
 package Server.Auth;
 
+import Server.Auth.AuthService;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Scanner;
 
 public class AuthServant extends UnicastRemoteObject implements AuthService {
 
@@ -16,12 +16,43 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
         this.connection = connection;
     }
 
-    public String echo(String input) throws RemoteException{
+    public String echo(String input) throws RemoteException {
         return "From server " + input;
     }
 
     @Override
-    public String login(String username, String password) throws RemoteException {
+    public String login() throws RemoteException {
+        // If all goes fine return a session ID
+        System.out.println("This is login");
+        System.out.print("Insert username: ");
+        Scanner newscanner = new Scanner(System.in);
+        String userName = newscanner.nextLine();
+        System.out.print("Insert password: ");
+        String userPassword = newscanner.nextLine();
+        String sql = "SELECT * FROM USERS";
+
+        ResultSet resultLogin = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            resultLogin = preparedStatement.executeQuery();
+            while (resultLogin.next()) {
+
+                String userNameDB = resultLogin.getString("userName");
+                String userPasswordDB = resultLogin.getString("userPassword");
+
+                if (userName.equals(userNameDB) && Encryption.hashPassword(userPassword).equals(userPasswordDB)) {
+                    System.out.println("Successfully logged in");
+                    String ID = userNameDB.substring(0, 3) + userPasswordDB.substring(0, 5);
+                    return Encryption.hashPassword(ID);
+                } else {
+                    System.out.println("Incorrect credentials");
+                }
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
         return null;
     }
 
