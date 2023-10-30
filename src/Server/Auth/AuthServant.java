@@ -1,6 +1,5 @@
 package Server.Auth;
 
-import Server.Auth.AuthService;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -10,7 +9,7 @@ import java.sql.SQLException;
 
 public class AuthServant extends UnicastRemoteObject implements AuthService {
 
-    private Connection connection;
+    private final Connection connection;
 
     public AuthServant(Connection connection) throws RemoteException {
         super();
@@ -34,7 +33,25 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
     @Override
     public boolean signup(String username, String password) throws RemoteException {
 
-            String sql = "INSERT INTO Users (UserName, UserPassword) VALUES (?, ?)";
+        if(username == null || password == null) {
+            throw new RemoteException("Username or password is null");
+
+        } else if (username.isBlank() || username.isEmpty()) {
+            throw new RemoteException("Username is empty");
+        }
+        else if (password.isBlank() || password.isEmpty()) {
+            throw new RemoteException("Password is empty");
+        }
+        else if (password.length() < 4) {
+            throw new RemoteException("Password does not meet the security requirements");
+        }
+
+        //Check if username already exists
+        if(checkUserNameExists(username)) {
+            throw new RemoteException("Username already exists");
+        }
+
+        String sql = "INSERT INTO Users (UserName, UserPassword) VALUES (?, ?)";
             String hashedPassword = Encryption.hashPassword(password);
             System.out.println(hashedPassword);
 
@@ -49,5 +66,19 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
                 System.out.println(e.getMessage());
                 return false;
             }
+    }
+
+    private boolean checkUserNameExists(String username) throws RemoteException {
+        String sqlQuery = "SELECT 1 FROM Users WHERE UserName = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            preparedStatement.setString(1, username);
+
+            return preparedStatement.executeQuery().next();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
     }
 }
