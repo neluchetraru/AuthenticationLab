@@ -33,20 +33,21 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
             while (resultLogin.next()) {
                 String userNameDB = resultLogin.getString("userName");
                 String userPasswordDB = resultLogin.getString("userPassword");
-                if (username.equals(userNameDB) && Encryption.hashPassword(password).equals(userPasswordDB)) {
-                    System.out.println("Successfully logged in");
-                    sessionID = this.sm.addSession(username);
-
-                } else {
-                    System.out.println("Incorrect credentials");
-                    throw  new RemoteException("Incorrect credentials");
+                if (username.equals(userNameDB)){
+                    if (Encryption.hashPassword(password).equals(userPasswordDB)){
+                        System.out.println("Successfully logged in");
+                        sessionID = this.sm.addSession(username);
+                        break;
+                    }
                 }
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw new RemoteException("Something went wrong");
         }
-
+        if (sessionID == null) {
+            throw new RemoteException("Invalid credentials.");
+        }
         return sessionID;
     }
 
