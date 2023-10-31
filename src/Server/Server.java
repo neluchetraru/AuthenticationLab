@@ -1,6 +1,7 @@
 package Server;
 
 import Server.Auth.AuthServant;
+import Server.Auth.SessionManager;
 import Server.Printer.PrinterServant;
 
 import java.rmi.RemoteException;
@@ -15,9 +16,10 @@ public class Server {
 
         DBConnection db = new DBConnection();
         Connection connection = db.getConnection();
+        SessionManager sm = new SessionManager();
         Registry registry = LocateRegistry.createRegistry(5100);
-        registry.rebind("hello", new PrinterServant(Logger.getInstance()));
-        registry.rebind("auth", new AuthServant(connection));
+        registry.rebind("printer", new PrinterServant(Logger.getInstance(), sm));
+        registry.rebind("auth", new AuthServant(connection, sm));
 
     } 
 

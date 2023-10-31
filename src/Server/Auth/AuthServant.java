@@ -11,9 +11,10 @@ import java.sql.SQLException;
 public class AuthServant extends UnicastRemoteObject implements AuthService {
 
     private final Connection connection;
-
-    public AuthServant(Connection connection) throws RemoteException {
+    private final SessionManager sm;
+    public AuthServant(Connection connection, SessionManager sm) throws RemoteException {
         super();
+        this.sm = sm;
         this.connection = connection;
     }
 
@@ -38,7 +39,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
 
                 if (username.equals(userNameDB) && Encryption.hashPassword(password).equals(userPasswordDB)) {
                     System.out.println("Successfully logged in");
-                    sessionID = new SessionManager().addSession(username);
+                    sessionID = this.sm.addSession(username);
 
                 } else {
                     System.out.println("Incorrect credentials");
@@ -55,7 +56,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
 
     @Override
     public void logout(String sessionID) throws RemoteException {
-       new SessionManager().revokeSession(sessionID);
+       this.sm.revokeSession(sessionID);
     }
 
     @Override
@@ -88,7 +89,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
                 preparedStatement.setString(2, hashedPassword);
 
                 int result = preparedStatement.executeUpdate();
-                return new SessionManager().addSession(username);
+                return this.sm.addSession(username);
             }
             catch (SQLException e) {
                 System.out.println(e.getMessage());
