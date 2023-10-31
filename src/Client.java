@@ -2,6 +2,7 @@ import Server.Auth.AuthService;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Scanner;
 
@@ -16,40 +17,42 @@ public class Client {
                 System.out.println("2. Register");
                 System.out.print("Please input either '1' or '2': ");
                 Scanner scanner = new Scanner(System.in);
-                SwitchLoop: while(true){
-                    String option = scanner.nextLine();
-                    switch(option) {
-                        case "1":
-                            System.out.print("Input user name: ");
-                            String userNameLI = scanner.nextLine();
-                            System.out.print("Input password: ");
-                            String passwordLI = scanner.nextLine();
-                            try {
-                                authService.login(userNameLI, passwordLI);
-                                break SwitchLoop;
-                            } catch (Exception e) {
-                                System.out.println("Incorrect credentials. Try again");
-                                break SwitchLoop;
-                            }
-                        case "2":
-                            System.out.print("Input user name: ");
-                            String userNameSU = scanner.nextLine();
-                            System.out.print("Input password: ");
-                            String passwordSU = scanner.nextLine();
+
+                String option = scanner.nextLine();
+                switch(option) {
+                    case "1":
+                        System.out.print("Input user name: ");
+                        String userNameLI = scanner.nextLine();
+                        System.out.print("Input password: ");
+                        String passwordLI = scanner.nextLine();
+                        try {
+                            authService.login(userNameLI, passwordLI);
+                            break;
+                        } catch (RemoteException e) {
+                            System.out.println(e.detail.getMessage());
+                            break;
+                        }
+                    case "2":
+                        System.out.print("Input user name: ");
+                        String userNameSU = scanner.nextLine();
+                        System.out.print("Input password: ");
+                        String passwordSU = scanner.nextLine();
+                        try {
                             authService.signup(userNameSU, passwordSU);
-                            break SwitchLoop;
+                            break;
+                        } catch (RemoteException e ) {
+
+                            System.out.println(e.detail.getMessage());
+                            
+
+                            break;
+                        }
                     }
 
                 }
             }
-        }
         catch (RemoteException e){
             System.err.println(e.detail.getMessage());
         }
-        catch (Exception e){
-            System.out.println("Exception: " + e.getMessage());
-        }
-
-
     }
 }
