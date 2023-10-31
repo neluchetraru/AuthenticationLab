@@ -1,5 +1,4 @@
 import Server.Auth.AuthService;
-import Server.Auth.Session;
 import Server.Printer.PrinterService;
 
 import java.net.MalformedURLException;
@@ -12,7 +11,7 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) throws MalformedURLException,  NotBoundException, RemoteException {
         try{
-            PrinterService printerService = (PrinterService) Naming.lookup("rmi://localhost:5099/printer");
+            PrinterService printerService = (PrinterService) Naming.lookup("rmi://localhost:5100/printer");
             AuthService authService = (AuthService) Naming.lookup("rmi://localhost:5100/auth");
 
             System.out.println("Welcome to the PrinterClient\nWhat would you like to do?");
@@ -63,7 +62,7 @@ public class Client {
                 System.out.println("8. Printer Status");
                 System.out.println("9. Read config");
                 System.out.println("10. Set config");
-                System.out.println("Please choose an option: ");
+                System.out.print("Please choose an option: ");
 
                 Scanner scanner = new Scanner(System.in);
 
@@ -85,7 +84,7 @@ public class Client {
                         Scanner scanner1 = new Scanner(System.in);
                         System.out.print("Input filename: ");
                         String filename = scanner1.nextLine();
-                        System.out.println("Input printer: ");
+                        System.out.print("Input printer: ");
                         String printer = scanner1.nextLine();
 
                         printerService.print(sessionID,filename, printer);
@@ -120,6 +119,7 @@ public class Client {
                         printerService.setConfig(sessionID,parameter1, value);
                         break;
                 }
+
             }
         }
         catch (RemoteException e){

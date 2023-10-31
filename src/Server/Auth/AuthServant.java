@@ -3,10 +3,8 @@ package Server.Auth;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.Scanner;
 
 public class AuthServant extends UnicastRemoteObject implements AuthService {
 
@@ -33,24 +31,23 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             resultLogin = preparedStatement.executeQuery();
             while (resultLogin.next()) {
-
                 String userNameDB = resultLogin.getString("userName");
                 String userPasswordDB = resultLogin.getString("userPassword");
-
-                if (username.equals(userNameDB) && Encryption.hashPassword(password).equals(userPasswordDB)) {
-                    System.out.println("Successfully logged in");
-                    sessionID = this.sm.addSession(username);
-
-                } else {
-                    System.out.println("Incorrect credentials");
-                    throw  new RemoteException("Incorrect credentials");
+                if (username.equals(userNameDB)){
+                    if (Encryption.hashPassword(password).equals(userPasswordDB)){
+                        System.out.println("Successfully logged in");
+                        sessionID = this.sm.addSession(username);
+                        break;
+                    }
                 }
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             throw new RemoteException("Something went wrong");
         }
-
+        if (sessionID == null) {
+            throw new RemoteException("Invalid credentials.");
+        }
         return sessionID;
     }
 
