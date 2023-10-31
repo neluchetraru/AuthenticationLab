@@ -21,14 +21,9 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
     }
 
     @Override
-    public String login() throws RemoteException {
-        // If all goes fine return a session ID
-        System.out.println("This is login");
-        System.out.print("Insert username: ");
-        Scanner newscanner = new Scanner(System.in);
-        String userName = newscanner.nextLine();
-        System.out.print("Insert password: ");
-        String userPassword = newscanner.nextLine();
+    public String login(String username, String password) throws RemoteException {
+
+
         String sql = "SELECT * FROM USERS";
 
         ResultSet resultLogin = null;
@@ -39,7 +34,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
                 String userNameDB = resultLogin.getString("userName");
                 String userPasswordDB = resultLogin.getString("userPassword");
 
-                if (userName.equals(userNameDB) && Encryption.hashPassword(userPassword).equals(userPasswordDB)) {
+                if (username.equals(userNameDB) && Encryption.hashPassword(password).equals(userPasswordDB)) {
                     System.out.println("Successfully logged in");
                     String ID = userNameDB.substring(0, 3) + userPasswordDB.substring(0, 5);
                     return Encryption.hashPassword(ID);
