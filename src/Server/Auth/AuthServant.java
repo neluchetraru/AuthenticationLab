@@ -1,11 +1,11 @@
 package Server.Auth;
 
-import Server.Auth.AuthService;
-
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.*;
-import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class AuthServant extends UnicastRemoteObject implements AuthService {
 
@@ -23,6 +23,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
     @Override
     public String login(String username, String password) throws RemoteException {
 
+        String sessionID = null;
 
         String sql = "SELECT * FROM USERS";
 
@@ -36,8 +37,8 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
 
                 if (username.equals(userNameDB) && Encryption.hashPassword(password).equals(userPasswordDB)) {
                     System.out.println("Successfully logged in");
-                    String ID = userNameDB.substring(0, 3) + userPasswordDB.substring(0, 5);
-                    return Encryption.hashPassword(ID);
+                    sessionID = new SessionManager().addSession(username);
+
                 } else {
                     System.out.println("Incorrect credentials");
                 }
@@ -45,15 +46,15 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-            return null;
+            throw new RemoteException("Something went wrong");
         }
 
-        return null;
+        return sessionID;
     }
 
     @Override
-    public String logout(String token) throws RemoteException {
-        return null;
+    public void logout(String sessionID) throws RemoteException {
+       new SessionManager().revokeSession(sessionID);
     }
 
     @Override
