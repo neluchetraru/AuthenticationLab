@@ -1,5 +1,6 @@
 package Server.Auth;
 
+import java.rmi.RemoteException;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager{
@@ -15,8 +16,7 @@ public class SessionManager{
         return sessionID;
     }
 
-    public boolean checkSession(String sessionID)
-    {
+    public boolean checkSession(String sessionID) throws RemoteException {
         if(sessionHashMap.containsKey(sessionID))
         {
             Session session = sessionHashMap.get(sessionID);
@@ -28,12 +28,12 @@ public class SessionManager{
             else
             {
                 sessionHashMap.remove(sessionID);
-                return false;
+                throw new RemoteException("Session expired");
             }
         }
         else
         {
-            return false;
+            throw new RemoteException("Session expired");
         }
     }
 
