@@ -41,8 +41,8 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
 
                 } else {
                     System.out.println("Incorrect credentials");
+                    throw  new RemoteException("Incorrect credentials");
                 }
-
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -58,7 +58,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
     }
 
     @Override
-    public boolean signup(String username, String password) throws RemoteException {
+    public String signup(String username, String password) throws RemoteException {
 
         if(username == null || password == null) {
             throw new RemoteException("Username or password is null");
@@ -87,11 +87,11 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
                 preparedStatement.setString(2, hashedPassword);
 
                 int result = preparedStatement.executeUpdate();
-                return result > 0;
+                return new SessionManager().addSession(username);
             }
             catch (SQLException e) {
                 System.out.println(e.getMessage());
-                return false;
+                return null;
             }
     }
 
