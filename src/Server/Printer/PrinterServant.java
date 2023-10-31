@@ -1,59 +1,63 @@
 package Server.Printer;
 
+import Server.Logger;
+
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class PrinterServant extends UnicastRemoteObject implements PrinterService {
+    private Logger logger;
 
-    public PrinterServant() throws RemoteException {
+    public PrinterServant(Logger logger) throws RemoteException {
         super();
+        this.logger = logger;
     }
-    public String echo(String input) throws RemoteException{
-        return "From server " + input;
-    }
-
-    @Override
-    public String print(String filename, String printer) throws RemoteException {
-        return null;
+    public void echo(String input) throws RemoteException{
+        this.logger.log(input);
     }
 
     @Override
-    public String queue(String printer) throws RemoteException {
-        return null;
+    public void print(String filename, String printer) throws RemoteException {
+        this.logger.log("Printing " + filename + " on " + printer);
     }
 
     @Override
-    public String topQueue(String printer, int job) throws RemoteException {
-        return null;
+    public void queue(String printer) throws RemoteException {
+        this.logger.log("Queueing " + printer);
     }
 
     @Override
-    public String start() throws RemoteException {
-        return null;
+    public void topQueue(String printer, int job) throws RemoteException {
+        this.logger.log("Topping " + printer + " with job " + job);
     }
 
     @Override
-    public String stop() throws RemoteException {
-        return null;
+    public void start() throws RemoteException {
+        this.logger.log("Starting the print server");
     }
 
     @Override
-    public String restart() throws RemoteException {
-        return null;
+    public void stop() throws RemoteException {
+        this.logger.log("Stopping the print server");
     }
 
     @Override
-    public String status(String printer) throws RemoteException {
-        return null;
+    public void restart() throws RemoteException {
+        this.logger.log("Restarting the print server");
     }
 
     @Override
-    public String readConfig(String parameter) throws RemoteException {
-        return null;
+    public void status(String printer) throws RemoteException {
+        this.logger.log("Status of " + printer);
     }
 
     @Override
-    public String setConfig(String parameter, String value) throws RemoteException {
-        return null;
+    public void readConfig(String parameter) throws RemoteException {
+        this.logger.log("Reading config of " + parameter);
+    }
+
+    @Override
+    public void setConfig(String parameter, String value) throws RemoteException {
+        this.logger.log("Setting config of " + parameter + " to " + value);
     }
 }

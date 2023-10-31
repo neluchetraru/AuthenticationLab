@@ -10,21 +10,14 @@ import java.sql.Connection;
 
 public class Server {
 
+
     public static void main(String[] args) throws RemoteException {
 
         DBConnection db = new DBConnection();
         Connection connection = db.getConnection();
-
         Registry registry = LocateRegistry.createRegistry(5100);
-        registry.rebind("hello", new PrinterServant());
+        registry.rebind("hello", new PrinterServant(Logger.getInstance()));
         registry.rebind("auth", new AuthServant(connection));
-
-
-
-
-
-
-
 
     } 
 

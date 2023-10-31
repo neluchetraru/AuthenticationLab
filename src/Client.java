@@ -1,4 +1,5 @@
 import Server.Auth.AuthService;
+
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -41,10 +42,7 @@ public class Client {
                             authService.signup(userNameSU, passwordSU);
                             break;
                         } catch (RemoteException e ) {
-
                             System.out.println(e.detail.getMessage());
-                            
-
                             break;
                         }
                     }
