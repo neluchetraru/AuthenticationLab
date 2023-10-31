@@ -1,6 +1,7 @@
 package Server.Auth;
 
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionManager{
@@ -21,7 +22,7 @@ public class SessionManager{
         {
             Session session = sessionHashMap.get(sessionID);
             // Check if session is expired
-            if(session.getExpirationDate().getTime() > System.currentTimeMillis())
+            if(session.getExpirationDate().isAfter(LocalDateTime.now()))
             {
                 return true;
             }
