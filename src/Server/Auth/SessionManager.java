@@ -16,6 +16,15 @@ public class SessionManager{
 
         return sessionID;
     }
+    public String getUser(String sessionID) {
+        String user = sessionHashMap.get(sessionID).getUsername();
+
+        if (user == null) {
+            System.out.println("Invalid Session ID");
+            return null;
+        }
+        return user;
+    }
 
     public boolean checkSession(String sessionID) throws RemoteException {
         if(sessionHashMap.containsKey(sessionID))

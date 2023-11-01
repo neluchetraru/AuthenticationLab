@@ -21,54 +21,54 @@ public class PrinterServant extends UnicastRemoteObject implements PrinterServic
     @Override
     public void print(String SessionID, String filename, String printer) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Printing " + filename + " on " + printer);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"print\" on file" + filename + " with printer " + printer);
     }
 
     @Override
     public void queue(String SessionID, String printer) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Queueing " + printer);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"queue\" with printer " + printer);
     }
 
     @Override
     public void topQueue(String SessionID, String printer, int job) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Topping " + printer + " with job " + job);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"topQueue\" with printer " + printer + "with job" + job);
     }
 
     @Override
     public void start(String SessionID)  throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Starting the print server");
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"start\"");
     }
 
     @Override
     public void stop(String SessionID) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Stopping the print server");
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"stop\"");
     }
 
     @Override
     public void restart(String SessionID) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Restarting the print server");
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"restart\"");
     }
 
     @Override
     public void status(String SessionID, String printer) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Status of " + printer);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"status\" with printer " + printer);
     }
 
     @Override
     public void readConfig(String SessionID, String parameter) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Reading config of " + parameter);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"readConfig\" on parameter" + parameter);
     }
 
     @Override
     public void setConfig(String SessionID, String parameter, String value) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("Setting config of " + parameter + " to " + value);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"setConfig\" on parameter" + parameter + " to value " + value);
     }
 }

@@ -55,6 +55,7 @@ public class Client {
                 }
 
                 ClientLoop: while (true) {
+                    System.out.println("You are logged in\nWhat would you like to do?");
                     System.out.println("1. Log out");
                     System.out.println("2. Start printer");
                     System.out.println("3. Stop printer");
@@ -93,31 +94,31 @@ public class Client {
                             printerService.print(sessionID, filename, printer);
                             break;
                         case "6":
-                            System.out.println("Input printer: ");
+                            System.out.print("Input printer: ");
                             String printer1 = scanner.nextLine();
                             printerService.queue(sessionID, printer1);
                             break;
                         case "7":
-                            System.out.println("Input printer: ");
+                            System.out.print("Input printer: ");
                             String printer2 = scanner.nextLine();
-                            System.out.println("Input job: ");
+                            System.out.print("Input job: ");
                             int job = scanner.nextInt();
                             printerService.topQueue(sessionID, printer2, job);
                             break;
                         case "8":
-                            System.out.println("Input printer: ");
+                            System.out.print("Input printer: ");
                             String printer3 = scanner.nextLine();
                             printerService.status(sessionID, printer3);
                             break;
                         case "9":
-                            System.out.println("Input parameter: ");
+                            System.out.print("Input parameter: ");
                             String parameter = scanner.nextLine();
                             printerService.readConfig(sessionID, parameter);
                             break;
                         case "10":
-                            System.out.println("Input parameter: ");
+                            System.out.print("Input parameter: ");
                             String parameter1 = scanner.nextLine();
-                            System.out.println("Input value: ");
+                            System.out.print("Input value: ");
                             String value = scanner.nextLine();
                             printerService.setConfig(sessionID, parameter1, value);
                             break;
