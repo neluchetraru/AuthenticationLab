@@ -22,14 +22,14 @@ public class Encryption {
         return hexString.toString();
     }
     static String hashPassword(String password) {
+        String salt = "IlikeSushi";
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
-        byte[] encodedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+        byte[] encodedPassword = md.digest((salt+password).getBytes(StandardCharsets.UTF_8));
         return bytesToHex(encodedPassword);
     }
-
 }
