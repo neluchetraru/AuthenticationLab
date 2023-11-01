@@ -10,17 +10,14 @@ import java.rmi.registry.Registry;
 import java.sql.Connection;
 
 public class Server {
-
-
     public static void main(String[] args) throws RemoteException {
-
         DBConnection db = new DBConnection();
         Connection connection = db.getConnection();
         SessionManager sm = new SessionManager();
         Registry registry = LocateRegistry.createRegistry(5100);
-        registry.rebind("printer", new PrinterServant(Logger.getInstance(), sm));
+        Logger logger = Logger.getInstance();
+        registry.rebind("printer", new PrinterServant(logger, sm));
         registry.rebind("auth", new AuthServant(connection, sm));
-
     } 
 
 }
