@@ -16,12 +16,11 @@ public class SessionManager{
 
         return sessionID;
     }
-    public String getUser(String sessionID) {
+    public String getUser(String sessionID) throws RemoteException {
         String user = sessionHashMap.get(sessionID).getUsername();
 
         if (user == null) {
-            System.out.println("Invalid Session ID");
-            return null;
+            throw new RemoteException("Invalid credentials.");
         }
         return user;
     }
