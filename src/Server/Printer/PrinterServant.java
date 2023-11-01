@@ -21,7 +21,7 @@ public class PrinterServant extends UnicastRemoteObject implements PrinterServic
     @Override
     public void print(String SessionID, String filename, String printer) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"print\" on file" + filename + " with printer " + printer);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"print\" on file " + filename + " with printer " + printer);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PrinterServant extends UnicastRemoteObject implements PrinterServic
     @Override
     public void topQueue(String SessionID, String printer, int job) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"topQueue\" with printer " + printer + "with job" + job);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"topQueue\" with printer " + printer + " with job " + job);
     }
 
     @Override
@@ -63,12 +63,12 @@ public class PrinterServant extends UnicastRemoteObject implements PrinterServic
     @Override
     public void readConfig(String SessionID, String parameter) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"readConfig\" on parameter" + parameter);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"readConfig\" on parameter " + parameter);
     }
 
     @Override
     public void setConfig(String SessionID, String parameter, String value) throws RemoteException {
         sm.checkSession(SessionID);
-        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"setConfig\" on parameter" + parameter + " to value " + value);
+        this.logger.log("User \""+ sm.getUser(SessionID) + "\" ran method \"setConfig\" on parameter " + parameter + " to value " + value);
     }
 }
