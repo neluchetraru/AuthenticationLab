@@ -6,7 +6,7 @@ import Server.Logger;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class PrinterServant extends UnicastRemoteObject implements PrinterService {
+public class PrinterServant implements PrinterService {
     private final Logger logger;
     SessionManager sm = null;
     public PrinterServant(Logger logger, SessionManager sm) throws RemoteException {

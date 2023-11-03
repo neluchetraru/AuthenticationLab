@@ -6,7 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.Scanner;
 
-public class AuthServant extends UnicastRemoteObject implements AuthService {
+public class AuthServant  implements AuthService {
 
     private final Connection connection;
     private final SessionManager sm;
@@ -25,7 +25,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
 
         String sessionID = null;
 
-        String sql = "SELECT * FROM USERS";
+        String sql = "SELECT * FROM Users";
 
         ResultSet resultLogin = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -90,7 +90,7 @@ public class AuthServant extends UnicastRemoteObject implements AuthService {
             }
             catch (SQLException e) {
                 System.out.println(e.getMessage());
-                return null;
+                throw new RemoteException("Something went wrong");
             }
     }
 

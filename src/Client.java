@@ -1,18 +1,24 @@
 import Server.Auth.AuthService;
 import Server.Printer.PrinterService;
 
+import javax.rmi.ssl.SslRMIClientSocketFactory;
 import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) throws MalformedURLException, NotBoundException, RemoteException {
         try {
-            PrinterService printerService = (PrinterService) Naming.lookup("rmi://localhost:5100/printer");
-            AuthService authService = (AuthService) Naming.lookup("rmi://localhost:5100/auth");
+            System.setProperty("javax.net.ssl.trustStore", "Cert/clientTruststore.jks");
+            System.setProperty("javax.net.ssl.trustStorePassword", "password");
+
+            Registry registry = LocateRegistry.getRegistry("localhost", 5101, new SslRMIClientSocketFactory());
+
+            PrinterService printerService = (PrinterService) registry.lookup("printer");
+            AuthService authService = (AuthService) registry.lookup("auth");
             MainMenu: while (true) {
                 System.out.println("Welcome to the PrinterClient\nWhat would you like to do?");
                 String sessionID = null;
