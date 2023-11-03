@@ -21,6 +21,8 @@ public class Server {
         System.setProperty("javax.net.ssl.keyStorePassword", "password");
         System.setProperty("javax.net.ssl.trustStore", "Cert/serverTruststore.jks");
         System.setProperty("javax.net.ssl.trustStorePassword", "password");
+        //System.setProperty("javax.net.debug", "ssl:handshake"); //To debug SSL/TLS
+
 
         DBConnection db = new DBConnection();
         Connection connection = db.getConnection();
@@ -31,7 +33,8 @@ public class Server {
         SslRMIClientSocketFactory sslClientSocketFactory = new SslRMIClientSocketFactory();
         SslRMIServerSocketFactory sslServerSocketFactory = new SslRMIServerSocketFactory();
 
-        Registry registry = LocateRegistry.createRegistry(5101, sslClientSocketFactory, sslServerSocketFactory);
+        int serverPort = 501;
+        Registry registry = LocateRegistry.createRegistry(serverPort, sslClientSocketFactory, sslServerSocketFactory);
 
         PrinterServant printerServant = new PrinterServant(logger, sm);
         AuthServant authServant = new AuthServant(connection, sm);
@@ -42,6 +45,8 @@ public class Server {
 
         registry.rebind("printer", printerServant);
         registry.rebind("auth", authServant);
+
+        System.out.println("Server is running on port " + serverPort + "...");
     } 
 
 }
