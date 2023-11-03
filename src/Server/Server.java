@@ -33,7 +33,7 @@ public class Server {
         SslRMIClientSocketFactory sslClientSocketFactory = new SslRMIClientSocketFactory();
         SslRMIServerSocketFactory sslServerSocketFactory = new SslRMIServerSocketFactory();
 
-        int serverPort = 501;
+        int serverPort = 5001;
         Registry registry = LocateRegistry.createRegistry(serverPort, sslClientSocketFactory, sslServerSocketFactory);
 
         PrinterServant printerServant = new PrinterServant(logger, sm);
