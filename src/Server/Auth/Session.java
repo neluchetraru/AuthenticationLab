@@ -1,11 +1,11 @@
 package Server.Auth;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.UUID;
 
 public class Session {
     private final String Username;
+    private final int UserID;
     private final LocalDateTime ExpirationDate;
 
     public static String generateSessionID() {
@@ -13,8 +13,10 @@ public class Session {
         return uuid.toString();
     }
 
-    public Session(String username){
+    //Constructor
+    public Session(String username, int UserID){
         this.Username = username;
+        this.UserID = UserID;
         this.ExpirationDate = LocalDateTime.now().plusHours(3);
     }
 
@@ -24,6 +26,10 @@ public class Session {
 
     public LocalDateTime getExpirationDate() {
         return ExpirationDate;
+    }
+
+    public int getUserID() {
+        return UserID;
     }
 }
 

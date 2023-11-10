@@ -2,18 +2,16 @@ package Server.Auth;
 
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
-import java.util.Scanner;
 
 public class AuthServant  implements AuthService {
 
-    private final Connection connection;
+    protected static Connection connection;
     private final SessionManager sm;
     public AuthServant(Connection connection, SessionManager sm) throws RemoteException {
         super();
         this.sm = sm;
-        this.connection = connection;
+        AuthServant.connection = connection;
     }
 
     public String echo(String input) throws RemoteException {
@@ -27,16 +25,17 @@ public class AuthServant  implements AuthService {
 
         String sql = "SELECT * FROM Users";
 
-        ResultSet resultLogin = null;
+        ResultSet resultLogin;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             resultLogin = preparedStatement.executeQuery();
             while (resultLogin.next()) {
                 String userNameDB = resultLogin.getString("userName");
                 String userPasswordDB = resultLogin.getString("userPassword");
+                int userIDDB = resultLogin.getInt("UserID");
                 if (username.equals(userNameDB)){
                     if (Encryption.hashPassword(password).equals(userPasswordDB)){
                         System.out.println("Successfully logged in");
-                        sessionID = this.sm.addSession(username);
+                        sessionID = this.sm.addSession(username, userIDDB);
                         break;
                     }
                 }
@@ -81,12 +80,22 @@ public class AuthServant  implements AuthService {
             String hashedPassword = Encryption.hashPassword(password);
             System.out.println(hashedPassword);
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 preparedStatement.setString(1, username);
                 preparedStatement.setString(2, hashedPassword);
 
-                int result = preparedStatement.executeUpdate();
-                return this.sm.addSession(username);
+                preparedStatement.executeUpdate();
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+
+                if(resultSet.next()) {
+                    int userID = resultSet.getInt(1);
+                    return this.sm.addSession(username, userID);
+                }
+                else {
+                    throw new RemoteException("Something went wrong");
+                }
+
+
             }
             catch (SQLException e) {
                 System.out.println(e.getMessage());
