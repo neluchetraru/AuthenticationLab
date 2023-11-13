@@ -60,8 +60,9 @@ public class Client {
                     }
                 }
 
+                System.out.println("You are logged in\nWhat would you like to do?");
                 ClientLoop: while (true) {
-                    System.out.println("You are logged in\nWhat would you like to do?");
+                    System.out.println("====================================");
                     System.out.println("1. Log out");
                     System.out.println("2. Start printer");
                     System.out.println("3. Stop printer");
@@ -72,62 +73,97 @@ public class Client {
                     System.out.println("8. Printer Status");
                     System.out.println("9. Read config");
                     System.out.println("10. Set config");
+                    if (authService.checkRole(sessionID)) {
+                        System.out.println("====================================");
+                        System.out.println("11. Change user role");
+                    }
                     System.out.print("Please choose an option: ");
 
                     Scanner scanner = new Scanner(System.in);
 
                     String option = scanner.nextLine();
-                    switch (option) {
-                        case "1":
-                            authService.logout(sessionID);
-                            break ClientLoop;
-                        case "2":
-                            printerService.start(sessionID);
-                            break;
-                        case "3":
-                            printerService.stop(sessionID);
-                            break;
-                        case "4":
-                            printerService.restart(sessionID);
-                            break;
-                        case "5":
-                            Scanner scanner1 = new Scanner(System.in);
-                            System.out.print("Input filename: ");
-                            String filename = scanner1.nextLine();
-                            System.out.print("Input printer: ");
-                            String printer = scanner1.nextLine();
+                    try {
+                        switch (option) {
+                            case "1":
+                                authService.logout(sessionID);
+                                System.out.println("Logged out");
+                                break ClientLoop;
+                            case "2":
+                                printerService.start(sessionID);
+                                System.out.println("Successfully started");
+                                break;
+                            case "3":
+                                printerService.stop(sessionID);
+                                System.out.println("Successfully stopped");
+                                break;
+                            case "4":
+                                printerService.restart(sessionID);
+                                System.out.println("Successfully restarted");
+                                break;
+                            case "5":
+                                Scanner scanner1 = new Scanner(System.in);
+                                System.out.print("Input filename: ");
+                                String filename = scanner1.nextLine();
+                                System.out.print("Input printer: ");
+                                String printer = scanner1.nextLine();
 
-                            printerService.print(sessionID, filename, printer);
-                            break;
-                        case "6":
-                            System.out.print("Input printer: ");
-                            String printer1 = scanner.nextLine();
-                            printerService.queue(sessionID, printer1);
-                            break;
-                        case "7":
-                            System.out.print("Input printer: ");
-                            String printer2 = scanner.nextLine();
-                            System.out.print("Input job: ");
-                            int job = scanner.nextInt();
-                            printerService.topQueue(sessionID, printer2, job);
-                            break;
-                        case "8":
-                            System.out.print("Input printer: ");
-                            String printer3 = scanner.nextLine();
-                            printerService.status(sessionID, printer3);
-                            break;
-                        case "9":
-                            System.out.print("Input parameter: ");
-                            String parameter = scanner.nextLine();
-                            printerService.readConfig(sessionID, parameter);
-                            break;
-                        case "10":
-                            System.out.print("Input parameter: ");
-                            String parameter1 = scanner.nextLine();
-                            System.out.print("Input value: ");
-                            String value = scanner.nextLine();
-                            printerService.setConfig(sessionID, parameter1, value);
-                            break;
+                                printerService.print(sessionID, filename, printer);
+                                System.out.println("Successfully printed");
+                                break;
+                            case "6":
+                                System.out.print("Input printer: ");
+                                String printer1 = scanner.nextLine();
+                                printerService.queue(sessionID, printer1);
+                                System.out.println("Successfully queued");
+                                break;
+                            case "7":
+                                System.out.print("Input printer: ");
+                                String printer2 = scanner.nextLine();
+                                System.out.print("Input job: ");
+                                int job = scanner.nextInt();
+                                printerService.topQueue(sessionID, printer2, job);
+                                System.out.println("Successfully topped queue");
+                                break;
+                            case "8":
+                                System.out.print("Input printer: ");
+                                String printer3 = scanner.nextLine();
+                                printerService.status(sessionID, printer3);
+                                System.out.println("Successfully got status");
+                                break;
+                            case "9":
+                                System.out.print("Input parameter: ");
+                                String parameter = scanner.nextLine();
+                                printerService.readConfig(sessionID, parameter);
+                                System.out.println("Successfully read config");
+                                break;
+                            case "10":
+                                System.out.print("Input parameter: ");
+                                String parameter1 = scanner.nextLine();
+                                System.out.print("Input value: ");
+                                String value = scanner.nextLine();
+                                printerService.setConfig(sessionID, parameter1, value);
+                                System.out.println("Successfully set config");
+                                break;
+                            case "11":
+                                if (authService.checkRole(sessionID)) {
+                                    System.out.print("Input user name: ");
+                                    String userName = scanner.nextLine();
+                                    System.out.print("Input role (admin, technician, powerUser, user): ");
+                                    String role = scanner.nextLine();
+                                    authService.changeRole(sessionID, userName, role);
+                                    System.out.println("Successfully changed role");
+                                    break;
+                                }
+                            default:
+                                System.out.println("Invalid option");
+                                break;
+                        }
+
+                    } catch (RemoteException e) {
+                        System.out.println(e.detail.getMessage());
+
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
                     }
                 }
 

@@ -8,4 +8,6 @@ public interface AuthService extends Remote {
     public void logout(String token) throws RemoteException;
     public String signup(String username, String password) throws RemoteException;
 
+    public boolean checkRole(String sessionID) throws RemoteException;
+    public void changeRole(String sessionID, String userName, String role) throws RemoteException;
 }

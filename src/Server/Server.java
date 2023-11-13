@@ -36,7 +36,7 @@ public class Server {
         int serverPort = 5101;
         Registry registry = LocateRegistry.createRegistry(serverPort, sslClientSocketFactory, sslServerSocketFactory);
 
-        PrinterServant printerServant = new PrinterServant(logger, sm);
+        PrinterServant printerServant = new PrinterServant(logger, sm, connection);
         AuthServant authServant = new AuthServant(connection, sm);
 
         UnicastRemoteObject.exportObject(printerServant, 0, sslClientSocketFactory, sslServerSocketFactory);

@@ -25,11 +25,15 @@ public class AuthServant  implements AuthService {
 
         String sessionID = null;
 
-        String sql = "SELECT * FROM Users";
+        String sql = "SELECT * FROM UsersP2 WHERE UserName = ?";
+
 
         ResultSet resultLogin = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, username);
+
             resultLogin = preparedStatement.executeQuery();
+
             while (resultLogin.next()) {
                 String userNameDB = resultLogin.getString("userName");
                 String userPasswordDB = resultLogin.getString("userPassword");
@@ -77,21 +81,57 @@ public class AuthServant  implements AuthService {
             throw new RemoteException("Username already exists");
         }
 
-        String sql = "INSERT INTO Users (UserName, UserPassword) VALUES (?, ?)";
-            String hashedPassword = Encryption.hashPassword(password);
-            System.out.println(hashedPassword);
+        String sql = "INSERT INTO UsersP2 (UserName, UserPassword, RoleID) VALUES (?, ?, 3)"; // By default the role is 4 which is a user
+        String hashedPassword = Encryption.hashPassword(password);
+        System.out.println(hashedPassword);
 
-            try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-                preparedStatement.setString(1, username);
-                preparedStatement.setString(2, hashedPassword);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setString(2, hashedPassword);
 
-                int result = preparedStatement.executeUpdate();
-                return this.sm.addSession(username);
+            int result = preparedStatement.executeUpdate();
+            return this.sm.addSession(username);
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RemoteException("Something went wrong");
+        }
+    }
+
+    @Override
+    public boolean checkRole(String sessionID) throws RemoteException{
+        String sql = "SELECT * FROM UsersP2 NATURAL JOIN Roles WHERE UserName = ?;";
+        String userName = this.sm.getUser(sessionID);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, userName);
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                String role = result.getString("RoleName");
+                if (role.equals("admin")) {
+                    return true;
+                }
             }
-            catch (SQLException e) {
-                System.out.println(e.getMessage());
-                throw new RemoteException("Something went wrong");
-            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Something went wrong");
+        }
+
+        return false;
+    }
+
+    @Override
+    public void changeRole(String sessionID, String userName, String role) {
+        String sql = "UPDATE UsersP2 SET RoleID = (SELECT RoleID FROM Roles WHERE RoleName = ?) WHERE UserName = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, role);
+            preparedStatement.setString(2, userName);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Something went wrong");
+        }
+
+
     }
 
     private boolean checkUserNameExists(String username) throws RemoteException {
