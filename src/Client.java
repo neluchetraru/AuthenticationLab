@@ -60,7 +60,13 @@ public class Client {
                     }
                 }
 
-                System.out.println("You are logged in\nWhat would you like to do?");
+                String currentUser = authService.getUserName(sessionID);
+
+
+                System.out.println("You are logged in as " + currentUser );
+                System.out.println("Your role is ***" + authService.getRole(currentUser) + "***");
+                System.out.println("You have access to the following functions: " + authService.getPermissions(currentUser));
+                System.out.println("What would you like to do?");
                 ClientLoop: while (true) {
                     System.out.println("====================================");
                     System.out.println("1. Log out");

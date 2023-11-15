@@ -134,6 +134,48 @@ public class AuthServant  implements AuthService {
 
     }
 
+    @Override
+    public String getUserName(String sessionID) throws RemoteException {
+        return this.sm.getUser(sessionID);
+    }
+
+    @Override
+    public String getPermissions(String userName) {
+        String sql = "SELECT * FROM UsersP2 NATURAL JOIN Roles NATURAL JOIN Permissions WHERE UserName = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, userName);
+            ResultSet result = preparedStatement.executeQuery();
+            StringBuilder permissions = new StringBuilder();
+            while (result.next()) {
+                String permission = result.getString("Permission");
+                permissions.append(permission);
+                if (!result.isLast())
+                    permissions.append(", ");
+            }
+
+            return permissions.toString();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Something went wrong");
+        }
+    }
+
+    @Override
+    public String getRole(String userName) {
+        String sql = "SELECT * FROM UsersP2 NATURAL JOIN Roles WHERE UserName = ?;";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, userName);
+            ResultSet result = preparedStatement.executeQuery();
+            result.next();
+            return result.getString("RoleName");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException("Something went wrong");
+        }
+
+    }
+
     private boolean checkUserNameExists(String username) throws RemoteException {
         String sqlQuery = "SELECT 1 FROM Users WHERE UserName = ?";
 
