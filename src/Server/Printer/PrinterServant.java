@@ -37,7 +37,7 @@ public class PrinterServant implements PrinterService {
 
     private boolean acquirePermission(String userName, String function) throws RemoteException {
 
-        String sql = "SELECT * FROM UsersP2 NATURAL JOIN Roles NATURAL JOIN Permissions WHERE UserName = ?;";
+            String sql = "SELECT * FROM UsersP2 NATURAL JOIN Roles NATURAL JOIN Permissions WHERE UserName = ?;";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, userName);
             ResultSet result = preparedStatement.executeQuery();

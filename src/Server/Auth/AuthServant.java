@@ -177,7 +177,7 @@ public class AuthServant  implements AuthService {
     }
 
     private boolean checkUserNameExists(String username) throws RemoteException {
-        String sqlQuery = "SELECT 1 FROM Users WHERE UserName = ?";
+        String sqlQuery = "SELECT 1 FROM UsersP2 WHERE UserName = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
             preparedStatement.setString(1, username);
